@@ -14,8 +14,9 @@ const cart = document.querySelector(".cart");
 const emptyCart = document.querySelector(".cancel-buy-btn");
 const gamesList = document.querySelector(".games");
 const addCartBtn = document.querySelectorAll(".add-cart");
-const emptyCartBtn = document.querySelector(".empty-cart-btn")
-
+const emptyCartBtn = document.querySelector(".empty-cart-btn");
+const confirmBuyBtn = document.querySelector(".confirm-buy-btn");
+const result = document.querySelector(".result");
 let articlesCart = [];
 
 /*
@@ -33,6 +34,7 @@ function cargarEventListener() {
         articlesCart = [];
         cleanHTML()
     })
+    confirmBuyBtn.addEventListener("click", mostrarArrayPrecios)
 }
 
 // FUNCIONES 
@@ -90,6 +92,19 @@ function readGameData(game) {
         articlesCart = [...articlesCart, gameInfo]
     }
     cartHTML()
+}
+
+// hacer una función que me saque todos los precios de los juegos que tiene el carrito y me cree
+// un nuevo array con esos items
+
+function gamesPrices() {
+    articlesCart.map((product) => {
+        return parseInt(product.price)
+    });
+}
+
+function mostrarArrayPrecios() {
+    console.log(gamesPrices())
 }
 
 // esta función limpia el html primero y después recorre el array de productos creando un nuevo div por cada producto que querramos agregar
