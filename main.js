@@ -19,6 +19,26 @@ const confirmBuyBtn = document.querySelector(".confirm-buy-btn");
 const result = document.querySelector(".result");
 let articlesCart = [];
 
+class Videogame {
+    constructor(title, category, price, id) {
+        this.title = title;
+        this.category = category;
+        this.price = price;
+        this.id = id;    
+    }
+}
+
+const arrayGames = [
+    new Videogame("Resident Evil Village", "Horror", 4299, 1),
+    new Videogame("Gta V", "Action - Open World", 1199, 2), 
+    new Videogame("Assasin's Creed Origins", "Action - Open World", 5299, 3), 
+    new Videogame("The Sims 4", "Simulation", 3599, 4), 
+    new Videogame("Battlefield 2042", "FPS - Action", 111899, 5), 
+    new Videogame("Elden Ring", "Open World - Souls Style", 6899, 6), 
+    new Videogame("Dying Light 2: Stay Human", "Zombies - Action", 5199, 7), 
+    new Videogame("The Quarry", "Drama", 5999, 8) 
+]
+
 /*
 en esta función se cargan todos los eventListeners
 */
@@ -34,7 +54,7 @@ function cargarEventListener() {
         articlesCart = [];
         cleanHTML()
     })
-    confirmBuyBtn.addEventListener("click", mostrarArrayPrecios)
+    confirmBuyBtn.addEventListener("click", gamesPrices)
 }
 
 // FUNCIONES 
@@ -46,8 +66,12 @@ function addGame(e) {
     showCart()
 
     if (e.target.classList.contains("add-cart")) {
-        const gameSelected = e.target.parentElement;
-        readGameData(gameSelected);
+        const id = parseInt(e.target.getAttribute("id"));
+        const found = arrayGames.find(game => {
+            return game.id === id
+        });
+        console.log(found);
+        readGameData(found);
     }
 }
 
@@ -70,11 +94,10 @@ function deleteGame(e) {
 
 function readGameData(game) {
     const gameInfo = {
-        img: game.querySelector(".img").src,
-        name: game.querySelector(".title").innerText,
-        category: game.querySelector(".category").innerText,
-        price: game.querySelector(".price").innerText,
-        id: game.querySelector("button").getAttribute("id"),
+        name: game.title,
+        category: game.category,
+        price: game.price,
+        id: game.id,
         cuantity: 1
     }
     const exist = articlesCart.some((game) => game.id === gameInfo.id);
@@ -98,14 +121,11 @@ function readGameData(game) {
 // un nuevo array con esos items
 
 function gamesPrices() {
-    articlesCart.map((product) => {
-        return parseInt(product.price)
-    });
+    console.log(articlesCart.reduce((acc,el) => {
+        return acc + el.price 
+    }, 0))
 }
 
-function mostrarArrayPrecios() {
-    console.log(gamesPrices())
-}
 
 // esta función limpia el html primero y después recorre el array de productos creando un nuevo div por cada producto que querramos agregar
 // en el que le muestra sus propiedades y agrega un botón para poder eliminar ese producto posteriormente
