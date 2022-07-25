@@ -1,5 +1,6 @@
 /*
 Poder ver el precio final del carrito  
+Agregar la funcionalidad de poder subir o bajar la cantidad de un producto
 Darle la posibilidad al usuario de pagar en cuotas
 Agregar un botón en el nav para cambiar los precios de los games a dólares o pesos
 Que se sumen los totales de los precios al carrito
@@ -7,6 +8,7 @@ Mostrar el price final del carrito
 */
 
 //Agregar funcionalidad de agregar el precio en pesos
+
 
 //  VARIABLES
 
@@ -16,6 +18,7 @@ const gamesList = document.querySelector(".games");
 const addCartBtn = document.querySelectorAll(".add-cart");
 const emptyCartBtn = document.querySelector(".empty-cart-btn");
 const confirmBuyBtn = document.querySelector(".confirm-buy-btn");
+const main = document.querySelector("#main");
 const result = document.querySelector(".result");
 let articlesCart = [];
 
@@ -42,7 +45,7 @@ const arrayGames = [
 /*
 en esta función se cargan todos los eventListeners
 */
-
+carritoVacio()
 cargarEventListener()
 function cargarEventListener() {
     // add to cart
@@ -54,7 +57,6 @@ function cargarEventListener() {
         articlesCart = [];
         cleanHTML()
     })
-    confirmBuyBtn.addEventListener("click", gamesPrices)
 }
 
 // FUNCIONES 
@@ -70,9 +72,10 @@ function addGame(e) {
         const found = arrayGames.find(game => {
             return game.id === id
         });
-        console.log(found);
         readGameData(found);
+        addToLocalStorage(found);
     }
+    gamesPrices()
 }
 
 // esta función elimina un producto del carrito html y del array de productos
@@ -81,13 +84,47 @@ function deleteGame(e) {
     e.preventDefault();
 
     if (e.target.classList.contains("delete-game")) {
-        const gameID = e.target.getAttribute("id");
-
+        const gameID = parseInt(e.target.getAttribute("id"));
+        const arrayParaModificar = callAndParse();
+        const gameName = arrayParaModificar.find(game => game.id === gameID).title
+        console.log(`${gameName} ha sido eliminado del localStorage y del carrito`);
+        const newArray = arrayParaModificar.filter(game => game.id !== gameID);
+        const localStorageArray = JSON.stringify(newArray);
+        localStorage.setItem("cart", localStorageArray);
         articlesCart = articlesCart.filter((game) => game.id !== gameID);
-
         cartHTML();
     }
 }
+function carritoVacio() {
+    if (localStorage.length > 0) {
+        const carrete = localStorage.getItem("cart");
+        const gamesLocalStorage = JSON.parse(carrete);
+        showCart()
+        gamesLocalStorage.forEach((el) => readGameData(el));
+    } else {
+        setLocalStorage()
+    }
+}
+
+function setLocalStorage() {
+    const cart = JSON.stringify(articlesCart);
+    localStorage.setItem("cart", cart);
+}
+
+function callAndParse() {
+    const carrito = localStorage.getItem("cart");
+    const parseado = JSON.parse(carrito);
+    return parseado;
+}
+
+function addToLocalStorage(game) {
+    const arrayParseado = callAndParse()
+    arrayParseado.push(game);
+    console.log(`${game.title} ha sido agregado al carrito y al localStorage`);
+    const output = JSON.stringify(arrayParseado);
+    localStorage.setItem("cart", output);
+}
+
 
 // esta función lee la info del producto, define si existe o no en el carrito
 // si existe le modifica la cantidad, si no llama a la función cartHTML
@@ -121,10 +158,12 @@ function readGameData(game) {
 // un nuevo array con esos items
 
 function gamesPrices() {
-    console.log(articlesCart.reduce((acc,el) => {
-        return acc + el.price 
-    }, 0))
+    const res = articlesCart.reduce((acc,el) => {
+        return acc = acc + (el.price * el.cuantity)
+    }, 0);
+    result.textContent = res;
 }
+
 
 
 // esta función limpia el html primero y después recorre el array de productos creando un nuevo div por cada producto que querramos agregar
