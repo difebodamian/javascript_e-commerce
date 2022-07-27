@@ -9,159 +9,148 @@ Mostrar el price final del carrito
 
 //Agregar funcionalidad de agregar el precio en pesos
 
-
 //  VARIABLES
-
-const cart = document.querySelector(".cart");
-const emptyCart = document.querySelector(".cancel-buy-btn");
-const gamesList = document.querySelector(".games");
-const addCartBtn = document.querySelectorAll(".add-cart");
-const emptyCartBtn = document.querySelector(".empty-cart-btn");
-const confirmBuyBtn = document.querySelector(".confirm-buy-btn");
+// cargamos las variables
+const carrito = document.querySelector(".cart");
+const cancelarCompraBtn = document.querySelector(".cancel-buy-btn");
+const listaDeJuegos = document.querySelector(".games");
+const añadirAlCarritoBtn = document.querySelectorAll(".add-cart");
+const vaciarCarritoBtn = document.querySelector(".empty-cart-btn");
+const confirmarCompraBtn = document.querySelector(".confirm-buy-btn");
 const main = document.querySelector("#main");
-const result = document.querySelector(".result");
-let articlesCart = [];
+const resultadoTotal = document.querySelector(".resultadoTotal")
+let articulosDelCarrito = [];
 
-class Videogame {
-    constructor(title, category, price, id) {
-        this.title = title;
-        this.category = category;
-        this.price = price;
+//la clase de los objetos que vamos a crear
+class Videojuego {
+    constructor(nombre, categoria, precio, id) {
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.precio = precio;
         this.id = id;    
     }
 }
-
-const arrayGames = [
-    new Videogame("Resident Evil Village", "Horror", 4299, 1),
-    new Videogame("Gta V", "Action - Open World", 1199, 2), 
-    new Videogame("Assasin's Creed Origins", "Action - Open World", 5299, 3), 
-    new Videogame("The Sims 4", "Simulation", 3599, 4), 
-    new Videogame("Battlefield 2042", "FPS - Action", 111899, 5), 
-    new Videogame("Elden Ring", "Open World - Souls Style", 6899, 6), 
-    new Videogame("Dying Light 2: Stay Human", "Zombies - Action", 5199, 7), 
-    new Videogame("The Quarry", "Drama", 5999, 8) 
+// array de los objetos 
+const arrayDeJuegos = [
+    new Videojuego("Resident Evil Village", "Terror", 4299, 1),
+    new Videojuego("Gta V", "Acción - Mundo Abierto", 1199, 2), 
+    new Videojuego("Assasin's Creed Origins", "Acción - Mundo Abierto", 5299, 3), 
+    new Videojuego("The Sims 4", "Simulación", 3599, 4), 
+    new Videojuego("Battlefield 2042", "FPS - Acción", 111899, 5), 
+    new Videojuego("Elden Ring", "Mundo Abierto - Tipo Souls", 6899, 6), 
+    new Videojuego("Dying Light 2: Stay Human", "Zombies - Acción", 5199, 7), 
+    new Videojuego("The Quarry", "Drama", 5999, 8) 
 ]
 
-/*
-en esta función se cargan todos los eventListeners
-*/
-carritoVacio()
+//
+verificarEstadoDelCarrito()
+// cargan todos los eventListeners
+
 cargarEventListener()
 function cargarEventListener() {
     // add to cart
-    gamesList.addEventListener("click", addGame)
+    listaDeJuegos.addEventListener("click", añadirJuegoAlCarrito)
     // delete from cart
-    cart.addEventListener("click", deleteGame)
+    carrito.addEventListener("click", eliminarJuegoDelCarrito)
     // empty cart
-    emptyCartBtn.addEventListener("click", () => {
-        articlesCart = [];
-        cleanHTML()
+    vaciarCarritoBtn.addEventListener("click", () => {
+        articulosDelCarrito = [];
+        limpiarHTML()
     })
 }
 
 // FUNCIONES 
-/*
-esta función llama a la función readGameData, que esta agrega un producto al array y al html por consiguiente mediante callbacks
-*/
-function addGame(e) {
+
+//esta función llama a la función readGameData, que esta agrega un producto al array y al html por consiguiente mediante callbacks
+
+function añadirJuegoAlCarrito(e) {
     e.preventDefault();
-    showCart()
+    mostrarCarrito()
 
     if (e.target.classList.contains("add-cart")) {
         const id = parseInt(e.target.getAttribute("id"));
-        const found = arrayGames.find(game => {
-            return game.id === id
+        const juegoSeleccionado = arrayDeJuegos.find(juego => {
+            return juego.id === id
         });
-        readGameData(found);
-        addToLocalStorage(found);
+        leerDatosDelJuego(juegoSeleccionado);
+        agregarAlLocalStorage(juegoSeleccionado);
     }
-    gamesPrices()
+    sumarPrecios()
 }
 
 // esta función elimina un producto del carrito html y del array de productos
 
-function deleteGame(e) {
+function eliminarJuegoDelCarrito(e) {
     e.preventDefault();
 
     if (e.target.classList.contains("delete-game")) {
-        const gameID = parseInt(e.target.getAttribute("id"));
-        const arrayParaModificar = callAndParse();
-        const gameName = arrayParaModificar.find(game => game.id === gameID).title
-        console.log(`${gameName} ha sido eliminado del localStorage y del carrito`);
-        const newArray = arrayParaModificar.filter(game => game.id !== gameID);
-        const localStorageArray = JSON.stringify(newArray);
-        localStorage.setItem("cart", localStorageArray);
-        articlesCart = articlesCart.filter((game) => game.id !== gameID);
-        cartHTML();
-    }
-}
-function carritoVacio() {
-    if (localStorage.length > 0) {
-        const carrete = localStorage.getItem("cart");
-        const gamesLocalStorage = JSON.parse(carrete);
-        showCart()
-        gamesLocalStorage.forEach((el) => readGameData(el));
-    } else {
-        setLocalStorage()
+        const juegoID = parseInt(e.target.getAttribute("id"));
+        const carritoDelLocalStorage = verificarLocalStorage();
+        const nombreDelJuego = carritoDelLocalStorage.find(juego => juego.id === juegoID).nombre
+        console.log(`${nombreDelJuego} ha sido eliminado del localStorage y del carrito`);
+        const arrayNuevo = carritoDelLocalStorage.filter(juego => juego.id !== juegoID);
+        const arrayDeLocalStorage = JSON.stringify(arrayNuevo);
+        localStorage.setItem("carrito", arrayDeLocalStorage);
+        articulosDelCarrito = articulosDelCarrito.filter((juego) => juego.id !== juegoID);
+        carritoHTML();
     }
 }
 
-function setLocalStorage() {
-    const cart = JSON.stringify(articlesCart);
-    localStorage.setItem("cart", cart);
+function verificarLocalStorage() {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    carrito ? console.log("hay productos almacenados en el local storage") : localStorage.setItem("carrito", carrito);
+    return carrito
 }
 
-function callAndParse() {
-    const carrito = localStorage.getItem("cart");
-    const parseado = JSON.parse(carrito);
-    return parseado;
+function verificarEstadoDelCarrito() {
+    
 }
 
-function addToLocalStorage(game) {
-    const arrayParseado = callAndParse()
-    arrayParseado.push(game);
-    console.log(`${game.title} ha sido agregado al carrito y al localStorage`);
-    const output = JSON.stringify(arrayParseado);
-    localStorage.setItem("cart", output);
+function agregarAlLocalStorage(juego) {
+    const arrayDelLocalStorage = verificarLocalStorage()
+    arrayDelLocalStorage.push(juego);
+    console.log(`${juego.nombre} ha sido agregado al carrito y al localStorage`);
+    const output = JSON.stringify(arrayDelLocalStorage);
+    localStorage.setItem("carrito", output);
 }
 
 
 // esta función lee la info del producto, define si existe o no en el carrito
 // si existe le modifica la cantidad, si no llama a la función cartHTML
 
-function readGameData(game) {
-    const gameInfo = {
-        name: game.title,
-        category: game.category,
-        price: game.price,
-        id: game.id,
-        cuantity: 1
+function leerDatosDelJuego(juego) {
+    const infoDelJuego = {
+        nombre: juego.nombre,
+        categoria: juego.categoria,
+        precio: juego.precio,
+        id: juego.id,
+        cantidad: 1
     }
-    const exist = articlesCart.some((game) => game.id === gameInfo.id);
-    if (exist) {
-        const games = articlesCart.map((game) => {
-            if (game.id === gameInfo.id) {
-                game.cuantity++;
-                return game;
+    const existe = articulosDelCarrito.some((juego) => juego.id === infoDelJuego.id);
+    if (existe) {
+        const juegos = articulosDelCarrito.map((juego) => {
+            if (juego.id === infoDelJuego.id) {
+                juego.cantidad++;
+                return juego;
             } else {
-                return game;
+                return juego;
             }
         })
-        articlesCart = [...games];
+        articulosDelCarrito = [...juegos];
     } else {
-        articlesCart = [...articlesCart, gameInfo]
+        articulosDelCarrito = [...articulosDelCarrito, infoDelJuego]
     }
-    cartHTML()
+    carritoHTML()
 }
 
 // hacer una función que me saque todos los precios de los juegos que tiene el carrito y me cree
 // un nuevo array con esos items
 
-function gamesPrices() {
-    const res = articlesCart.reduce((acc,el) => {
-        return acc = acc + (el.price * el.cuantity)
+function sumarPrecios() {
+    const resultado = articulosDelCarrito.reduce((acc,game) => {
+        return acc = acc + (game.price * game.cuantity)
     }, 0);
-    result.textContent = res;
+    resultadoTotal.textContent = resultado;
 }
 
 
@@ -169,32 +158,32 @@ function gamesPrices() {
 // esta función limpia el html primero y después recorre el array de productos creando un nuevo div por cada producto que querramos agregar
 // en el que le muestra sus propiedades y agrega un botón para poder eliminar ese producto posteriormente
 
-function cartHTML() {
+function carritoHTML() {
 
-    cleanHTML()
+    limpiarHTML()
 
-    articlesCart.forEach((game) => {
+    articulosDelCarrito.forEach((juego) => {
         const div = document.createElement("div");
-        div.classList.add("game")
+        div.classList.add("juego")
         div.innerHTML = `
-        <h4>Nombre: ${game.name}</h4>
-        <p>Categría: ${game.category}</p>
-        <p>Precio: ${game.price}</p>
-        <p>Cantidad: ${game.cuantity}</p>
-        <button class="delete-game" id="${game.id}">X</button>
+        <h4>Nombre: ${juego.nombre}</h4>
+        <p>Categría: ${juego.categoria}</p>
+        <p>Precio: $${juego.precio}</p>
+        <p>Cantidad: ${juego.cantidad}</p>
+        <button class="delete-game" id="${juego.id}">X</button>
         `
-        cart.appendChild(div)
+        carrito.appendChild(div)
     })
 }
 
 // muestra el carrito, que inicialmente está oculto
 
-function showCart() {
-    cart.classList.add("cart-style")
+function mostrarCarrito() {
+    carrito.classList.add("cart-style")
 }
 
-function cleanHTML() {
-    cart.innerHTML = "";
+function limpiarHTML() {
+    carrito.innerHTML = "";
 }
 
 
