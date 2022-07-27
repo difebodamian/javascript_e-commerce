@@ -103,8 +103,10 @@ function verificarLocalStorage() {
 }
 
 function verificarEstadoDelCarrito() {
-    
+    articulosDelCarrito.push(verificarLocalStorage());
+    carritoHTML()
 }
+
 
 function agregarAlLocalStorage(juego) {
     const arrayDelLocalStorage = verificarLocalStorage()
