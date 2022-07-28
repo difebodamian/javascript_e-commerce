@@ -5,11 +5,15 @@ Darle la posibilidad al usuario de pagar en cuotas
 Agregar un botón en el nav para cambiar los precios de los games a dólares o pesos
 Que se sumen los totales de los precios al carrito
 Mostrar el price final del carrito
+agreagar sweet alert cuando compre el carrito, y cuando quiera vaciarlo (dandole una opción de arrepentirse al usuario)}
+toast para mensaje por cada juego que agregue al carrito
 */
+
 
 //Agregar funcionalidad de agregar el precio en pesos
 
 //  VARIABLES
+
 // cargamos las variables
 const carrito = document.querySelector(".cart");
 const cancelarCompraBtn = document.querySelector(".cancel-buy-btn");
@@ -18,7 +22,9 @@ const añadirAlCarritoBtn = document.querySelectorAll(".add-cart");
 const vaciarCarritoBtn = document.querySelector(".empty-cart-btn");
 const confirmarCompraBtn = document.querySelector(".confirm-buy-btn");
 const main = document.querySelector("#main");
-const resultadoTotal = document.querySelector(".resultadoTotal")
+const resultadoTotal = document.querySelector(".resultadoTotal");
+const aumentarCantidadBtn = document.querySelectorAll(".aumentar-cantidad");
+const reducirCantidadBtn = document.querySelectorAll(".reducir-cantidad");
 let articulosDelCarrito = [];
 
 //la clase de los objetos que vamos a crear
@@ -52,11 +58,10 @@ function cargarEventListener() {
     listaDeJuegos.addEventListener("click", añadirJuegoAlCarrito)
     // delete from cart
     carrito.addEventListener("click", eliminarJuegoDelCarrito)
+    // aumentar cantidad
+    carrito.addEventListener("click", aumentarCantidadDeJuego)
     // empty cart
-    vaciarCarritoBtn.addEventListener("click", () => {
-        articulosDelCarrito = [];
-        limpiarHTML()
-    })
+    vaciarCarritoBtn.addEventListener("click", vaciarCarrito)
 }
 
 // FUNCIONES 
@@ -75,7 +80,6 @@ function añadirJuegoAlCarrito(e) {
         leerDatosDelJuego(juegoSeleccionado);
         agregarAlLocalStorage(juegoSeleccionado);
     }
-    sumarPrecios()
 }
 
 // esta función elimina un producto del carrito html y del array de productos
@@ -94,7 +98,38 @@ function eliminarJuegoDelCarrito(e) {
         articulosDelCarrito = articulosDelCarrito.filter((juego) => juego.id !== juegoID);
         carritoHTML();
     }
+    sumarPrecios()
 }
+
+
+function aumentarCantidadDeJuego(e) {
+    e.preventDefault(); 
+    const clase = e.target.classList;
+    if (clase.contains("aumentar-cantidad")) {
+        const juegoID = parseInt(e.target.getAttribute("id")); 
+        const juegoSeleccionado = arrayDeJuegos.find(juego => {
+            return juego.id === juegoID
+        });
+        leerDatosDelJuego(juegoSeleccionado);
+        agregarAlLocalStorage(juegoSeleccionado);
+    } else if (clase.contains("reducir-cantidad")) {
+        const juegoID = parseInt(e.target.getAttribute("id"));
+        const juego = articulosDelCarrito.find((juego) => juego.id === juegoID);
+        const carritoDelLocalStorage = verificarLocalStorage();
+        const nombreDelJuego = carritoDelLocalStorage.find(juego => juego.id === juegoID).nombre
+        console.log(`${nombreDelJuego} ha sido eliminado del localStorage y del carrito`);
+        const arrayNuevo = carritoDelLocalStorage.filter(juego => juego.id !== juegoID);
+        const arrayDeLocalStorage = JSON.stringify(arrayNuevo);
+        localStorage.setItem("carrito", arrayDeLocalStorage);
+        juego.cantidad--;
+        if (juego.cantidad === 0) {
+            articulosDelCarrito = articulosDelCarrito.filter((juego) => juego.id !== juegoID);
+            carritoHTML();
+        }
+    }
+    actualizarCarrito()
+}
+
 
 function verificarLocalStorage() {
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
@@ -145,17 +180,17 @@ function leerDatosDelJuego(juego) {
     } else {
         articulosDelCarrito = [...articulosDelCarrito, infoDelJuego]
     }
-    carritoHTML()
+    actualizarCarrito();
 }
 
 // hacer una función que me saque todos los precios de los juegos que tiene el carrito y me cree
 // un nuevo array con esos items
 
 function sumarPrecios() {
-    const resultado = articulosDelCarrito.reduce((acc,game) => {
-        return acc = acc + (game.price * game.cuantity)
+    const resultado = articulosDelCarrito.reduce((acc,juego) => {
+        return acc = acc + (juego.precio * juego.cantidad)
     }, 0);
-    resultadoTotal.textContent = resultado;
+    resultadoTotal.textContent = "$" + resultado;
 }
 
 
@@ -164,9 +199,9 @@ function sumarPrecios() {
 // en el que le muestra sus propiedades y agrega un botón para poder eliminar ese producto posteriormente
 
 function carritoHTML() {
-
+    
     limpiarHTML()
-
+    
     articulosDelCarrito.forEach((juego) => {
         const div = document.createElement("div");
         div.classList.add("juego")
@@ -175,9 +210,11 @@ function carritoHTML() {
         <p>Categría: ${juego.categoria}</p>
         <p>Precio: $${juego.precio}</p>
         <p>Cantidad: ${juego.cantidad}</p>
-        <button class="delete-game" id="${juego.id}">X</button>
+        <button class="aumentar-cantidad" id="${juego.id}">+</button>
+        <button class="reducir-cantidad" id="${juego.id}">-</button>
+        <button class="delete-game" id="${juego.id}">Eliminar</button>
         `
-        carrito.appendChild(div)
+        carrito.appendChild(div);
     })
 }
 
@@ -190,10 +227,20 @@ function mostrarCarrito() {
 function limpiarHTML() {
     carrito.innerHTML = "";
 }
+function actualizarCarrito() {
+    carritoHTML();
+    sumarPrecios();
+}
 
-
-
-
+function vaciarCarrito() {
+    let localStorageArray = JSON.parse(localStorage.getItem("carrito"));
+    localStorageArray = [];
+    const nuevoLocalStorage = JSON.stringify(localStorageArray);
+    localStorage.setItem("carrito", nuevoLocalStorage)
+    articulosDelCarrito = [];
+    limpiarHTML();
+    console.log("Local Storage vacío");
+}
 
 
 
