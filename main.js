@@ -25,6 +25,10 @@ const main = document.querySelector("#main");
 const resultadoTotal = document.querySelector(".resultadoTotal");
 const aumentarCantidadBtn = document.querySelectorAll(".aumentar-cantidad");
 const reducirCantidadBtn = document.querySelectorAll(".reducir-cantidad");
+const inputNombre = document.querySelector("#nombre");
+const inputEmail = document.querySelector("#email");
+const inputContraseña = document.querySelector("#contraseña");
+const botonForm = document.querySelector(".form_button");
 let articulosDelCarrito = [];
 
 //la clase de los objetos que vamos a crear
@@ -55,14 +59,19 @@ verificarEstadoDelCarrito()
 cargarEventListener()
 function cargarEventListener() {
     // add to cart
-    listaDeJuegos.addEventListener("click", añadirJuegoAlCarrito)
+    listaDeJuegos.addEventListener("click", añadirJuegoAlCarrito);
     // delete from cart
-    carrito.addEventListener("click", eliminarJuegoDelCarrito)
+    carrito.addEventListener("click", eliminarJuegoDelCarrito);
     // aumentar cantidad
-    carrito.addEventListener("click", aumentarCantidadDeJuego)
+    carrito.addEventListener("click", aumentarCantidadDeJuego);
     // empty cart
-    vaciarCarritoBtn.addEventListener("click", vaciarCarrito)
+    vaciarCarritoBtn.addEventListener("click", vaciarCarritoSA);
+    inputNombre.addEventListener("change", updateValue);
+    inputEmail.addEventListener("change", updateValue);
+    inputContraseña.addEventListener("change", updateValue);
+    botonForm.addEventListener("click", (e) => {e.preventDefault()})
 }
+
 
 // FUNCIONES 
 
@@ -116,8 +125,6 @@ function aumentarCantidadDeJuego(e) {
         const juegoID = parseInt(e.target.getAttribute("id"));
         const juego = articulosDelCarrito.find((juego) => juego.id === juegoID);
         const carritoDelLocalStorage = verificarLocalStorage();
-        const nombreDelJuego = carritoDelLocalStorage.find(juego => juego.id === juegoID).nombre
-        console.log(`${nombreDelJuego} ha sido eliminado del localStorage y del carrito`);
         const arrayNuevo = carritoDelLocalStorage.filter(juego => juego.id !== juegoID);
         const arrayDeLocalStorage = JSON.stringify(arrayNuevo);
         localStorage.setItem("carrito", arrayDeLocalStorage);
@@ -239,9 +246,46 @@ function vaciarCarrito() {
     localStorage.setItem("carrito", nuevoLocalStorage)
     articulosDelCarrito = [];
     limpiarHTML();
+    actualizarCarrito()
     console.log("Local Storage vacío");
 }
 
+function vaciarCarritoSA() {
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: "Seguro que quieres eliminar todos los elementos del carrito?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire(
+            'Eliminado',
+            'Su carrito ha sido eliminado con éxito',
+            'success'
+          )
+          vaciarCarrito()
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'Su carrito está a salvo',
+            'error'
+          )
+        }
+      })
+}
 
 
 
