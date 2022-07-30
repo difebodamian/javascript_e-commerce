@@ -60,12 +60,14 @@ function cargarEventListener() {
     carrito.addEventListener("click", eliminarJuegoDelCarrito);
     // modificar la cantidad de juegos
     carrito.addEventListener("click", modificarCantidad);
+    // confirmar compra
+    confirmarCompraBtn.addEventListener("click", confirmarCompra)
     // vaciarCarrito
     vaciarCarritoBtn.addEventListener("click", vaciarCarritoSweetAlert);
     // enviar formulario
     botonForm.addEventListener("click", formulario)
     // cerrar sesión
-    cerrarSesionBtn.addEventListener("click", cerrarSesion)
+    cerrarSesionBtn.addEventListener("click", cerrarSesion);
 }
 
 
@@ -127,19 +129,21 @@ function cerrarSesion() {
     ocultarBotonCerrarSesion();
     mostrarFormulario();
     const user = localStorage.getItem("user");
+    const usuario = JSON.parse(user);
+    console.log(usuario);
+    toastifyCerrarSesion(usuario)
     user & localStorage.removeItem("user");
-    console.log("sesion cerrada");
 }
 
 // verifica si hay un usuario registrado en el local storage
 
 function verificarSesionIniciada() {
     const usuarioExistente = localStorage.getItem("user");
+    const usuario = JSON.parse(usuarioExistente);
+    console.log(usuario);
     usuarioExistente & ocultarFormulario();
     usuarioExistente & mostrarBotonDeCerrarSesion();
 }
-
-// function agregarContraseñaAlLocalStorage
 
 // FUNCIONES 
 
@@ -336,6 +340,43 @@ function vaciarCarrito() {
 
 // uso de la librería sweet alert para vaciar el carrito
 
+function confirmarCompra() {
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Quieres comprar este carrito?',
+        text: "Es tu última oportunidad para redimirte!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, quiero comprarlo',
+        cancelButtonText: 'No, me arrepentí!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire(
+            'Listo!',
+            'Compra realizada',
+            'success'
+          )
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'Tu compra ha sido cancelada',
+            'error'
+          )
+        }
+      })
+}
+
 function vaciarCarritoSweetAlert() {
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -380,7 +421,7 @@ function toastifyAgregar(juego) {
         text: `Has agregado ${juego.nombre} a tu carrito`,
         duration: 3000,
         destination: "#carrito",
-        newWindow: true,
+        newWindow: false,
         gravity: "top", // `top` or `bottom`
         position: "right", // `left`, `center` or `right`
         stopOnFocus: true, // Prevents dismissing of toast on hover
@@ -397,7 +438,7 @@ function toastifyEliminar(juego) {
         text: `Has eliminado ${juego} de tu carrito`,
         duration: 3000,
         destination: "#carrito",
-        newWindow: true,
+        newWindow: false,
         gravity: "top", // `top` or `bottom`
         position: "right", // `left`, `center` or `right`
         stopOnFocus: true, // Prevents dismissing of toast on hover
@@ -407,6 +448,7 @@ function toastifyEliminar(juego) {
         onClick: function(){} // Callback after click
       }).showToast();
 }
+
 
 function toastifyIniciarSesion(usuario) {
     Toastify({
@@ -425,4 +467,20 @@ function toastifyIniciarSesion(usuario) {
       }).showToast();
 }
 
+function toastifyCerrarSesion(usuario) {
+    Toastify({
+        text: `${usuario.nombre} ha cerrado sesión`,
+        duration: 3000,
+        destination: "https://github.com/apvarun/toastify-js",
+        newWindow: true,
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "right", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+          background: "linear-gradient(to right, #00b09b, #96c93d)",
+        },
+        onClick: function(){} // Callback after click
+      }).showToast();
+}
 
