@@ -27,8 +27,10 @@ const aumentarCantidadBtn = document.querySelectorAll(".aumentar-cantidad");
 const reducirCantidadBtn = document.querySelectorAll(".reducir-cantidad");
 const inputNombre = document.querySelector("#nombre");
 const inputEmail = document.querySelector("#email");
-const inputContraseña = document.querySelector("#contraseña");
+const inputContraseña = document.querySelector("#password");
 const botonForm = document.querySelector(".form_button");
+const contenedorFormulario = document.querySelector(".form-container");
+const cerrarSesionBtn = document.querySelector(".cerrar-sesion");
 let articulosDelCarrito = [];
 
 //la clase de los objetos que vamos a crear
@@ -53,25 +55,85 @@ const arrayDeJuegos = [
 ]
 
 //
-verificarEstadoDelCarrito()
+verificarEstadoDelCarrito();
+verificarSesionIniciada();
 // cargan todos los eventListeners
 
 cargarEventListener()
 function cargarEventListener() {
-    // add to cart
+    // añadir juego al carrito
     listaDeJuegos.addEventListener("click", añadirJuegoAlCarrito);
-    // delete from cart
+    // remover juego del carrito
     carrito.addEventListener("click", eliminarJuegoDelCarrito);
-    // aumentar cantidad
-    carrito.addEventListener("click", aumentarCantidadDeJuego);
-    // empty cart
-    vaciarCarritoBtn.addEventListener("click", vaciarCarritoSA);
-    inputNombre.addEventListener("change", updateValue);
-    inputEmail.addEventListener("change", updateValue);
-    inputContraseña.addEventListener("change", updateValue);
-    botonForm.addEventListener("click", (e) => {e.preventDefault()})
+    // modificar la cantidad de juegos
+    carrito.addEventListener("click", modificarCantidad);
+    // vaciarCarrito
+    vaciarCarritoBtn.addEventListener("click", vaciarCarritoSweetAlert);
+    // enviar formulario
+    botonForm.addEventListener("click", formulario)
+    // cerrar sesión
+    cerrarSesionBtn.addEventListener("click", cerrarSesion)
 }
 
+function formulario(e) {
+    e.preventDefault();
+    const nombre = inputNombre.value;
+    nombre === "" && console.log("nombre inválido");
+    const email = inputEmail.value;
+    email === "" && console.log("email inválido");
+    const contraseña = inputContraseña.value;
+    contraseña === "" && console.log("contraseña inválido");
+    (nombre,email,contraseña) ? usuario(nombre, email, contraseña) : console.log("error");
+}
+
+function usuario(nombre,email,contraseña) {
+    const usuario = {
+        nombre: nombre,
+        email: email,
+        contraseña: contraseña
+    }
+    agregarUsuarioAlLocalStorage(usuario)
+}
+
+function agregarUsuarioAlLocalStorage(usuario) {
+    const usuarioNuevo = JSON.stringify(usuario);
+    localStorage.setItem("user", usuarioNuevo);
+    console.log(`${usuario.nombre} ha sido ingresado al local storage`);
+    ocultarFormulario();
+    mostrarBotonDeCerrarSesion();
+}
+
+function ocultarFormulario() {
+    contenedorFormulario.classList.add("none");
+}
+
+function mostrarFormulario() {
+    contenedorFormulario.classList.contains("none") & contenedorFormulario.classList.remove("none") 
+}
+
+function mostrarBotonDeCerrarSesion() {
+    cerrarSesionBtn.classList.contains("none") & cerrarSesionBtn.classList.remove("none");
+}
+
+function ocultarBotonCerrarSesion() {
+    cerrarSesionBtn.classList.add("none");
+}
+
+function cerrarSesion() {
+    ocultarBotonCerrarSesion();
+    mostrarFormulario();
+    const user = localStorage.getItem("user");
+    user & localStorage.removeItem("user");
+    console.log("sesion cerrada");
+}
+
+function verificarSesionIniciada() {
+    const usuarioExistente = localStorage.getItem("user");
+    usuarioExistente & ocultarFormulario();
+    usuarioExistente & mostrarBotonDeCerrarSesion();
+}
+
+// function agregarContraseñaAlLocalStorage
 
 // FUNCIONES 
 
@@ -111,7 +173,7 @@ function eliminarJuegoDelCarrito(e) {
 }
 
 
-function aumentarCantidadDeJuego(e) {
+function modificarCantidad(e) {
     e.preventDefault(); 
     const clase = e.target.classList;
     if (clase.contains("aumentar-cantidad")) {
@@ -250,7 +312,7 @@ function vaciarCarrito() {
     console.log("Local Storage vacío");
 }
 
-function vaciarCarritoSA() {
+function vaciarCarritoSweetAlert() {
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: 'btn btn-success',

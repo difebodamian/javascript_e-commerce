@@ -12,7 +12,20 @@
 <body>
     <nav id="nav">
         <h1 class="heading">Games Store</h1>
+        <button class="cerrar-sesion none">Cerrar Sesión</button>
     </nav>
+    <div class="form-container">
+        <form action="" id="form">
+            <h3>Registro</h3>
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" id="nombre" placeholder="Escribe tu nombre" contenteditable="true" required>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Escribe tu email" contenteditable="true" required>
+            <label for="constraseña">constraseña</label>
+            <input type="password" name="constraseña" id="password" placeholder="Escribe constraseña" contenteditable="true" required>
+            <button class="form_button" type="submit">Enviar</button>
+        </form>
+    </div>
     <main id="main">
         <div class="grid games">
             <div class="card">
@@ -80,18 +93,7 @@
             <button class="empty-cart-btn">Empty Cart</button>
             <button class="cancel-buy-btn">Cancel Buy</button>
         </div>
-        <div class="form-container">
-            <form action="" id="form">
-                <h3>Registro</h3>
-                <label for="nombre">Nombre</label>
-                <input type="text" name="nombre" id="nombre" placeholder="Escribe tu nombre">
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email" placeholder="Escribe tu email">
-                <label for="constraseña">constraseña</label>
-                <input type="password" name="constraseña" id="constraseña" placeholder="Escribe constraseña">
-                <button class="form_button" type="submit">Enviar</button>
-            </form>
-        </div>
+        
     </main>
 
 
