@@ -30,7 +30,7 @@
     <main id="main">
         <div class="grid games">
             <div class="card">
-                <img class="img" src="assets/revillage.jpg" alt="">
+                <img class="img" src="assets/village.jpg" alt="">
                 <h3 class="title">Resident Evil Village</h3>
                 <span class="category">Horror - FPS</span>
                 <span class="price">$4.299</span>
@@ -58,7 +58,7 @@
                 <button class="button add-cart" id="4">Add to cart</button>
             </div>
             <div class="card">
-                <img class="img" src="assets/Battlefield-2042-1.jpg" alt="">
+                <img class="img" src="assets/battlefield-2042.jpg" alt="">
                 <h3 class="title">Battlefield 2042</h3>
                 <span class="category">FPS - Action</span>
                 <span class="price">$11.1899</span>
@@ -86,7 +86,25 @@
                 <button class="button add-cart" id="8">Add to cart</button>
             </div>
         </div>
-        <div class="cart" id="carrito"></div>
+        <div class="table-container">
+            <table class="table" id="carrito">
+                <thead class="cart">
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Aumentar</th>
+                        <th>Reducir</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+    
+                </tbody>
+            </table>
+        </div>
 
         <div class="cart-buttons flex">
             <h3>Total: <span class="resultadoTotal"></span></h3>

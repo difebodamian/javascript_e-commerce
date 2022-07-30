@@ -5,7 +5,7 @@ Agregar un botón en el nav para cambiar los precios de los games a dólares o p
 
 //  VARIABLES
 
-const carrito = document.querySelector(".cart");
+const carrito = document.querySelector(".tbody");
 const cancelarCompraBtn = document.querySelector(".cancel-buy-btn");
 const listaDeJuegos = document.querySelector(".games");
 const añadirAlCarritoBtn = document.querySelectorAll(".add-cart");
@@ -25,25 +25,28 @@ let articulosDelCarrito = [];
 
 //la clase de los objetos que vamos a crear
 class Videojuego {
-    constructor(nombre, categoria, precio, id) {
+    constructor(nombre, categoria, precio, id, img) {
         this.nombre = nombre;
         this.categoria = categoria;
         this.precio = precio;
-        this.id = id;    
+        this.id = id; 
+        this.img = img; 
     }
 }
 // array de los objetos 
 
 const arrayDeJuegos = [
-    new Videojuego("Resident Evil Village", "Terror", 4299, 1),
-    new Videojuego("Gta V", "Acción - Mundo Abierto", 1199, 2), 
-    new Videojuego("Assasin's Creed Origins", "Acción - Mundo Abierto", 5299, 3), 
-    new Videojuego("The Sims 4", "Simulación", 3599, 4), 
-    new Videojuego("Battlefield 2042", "FPS - Acción", 111899, 5), 
-    new Videojuego("Elden Ring", "Mundo Abierto - Tipo Souls", 6899, 6), 
-    new Videojuego("Dying Light 2: Stay Human", "Zombies - Acción", 5199, 7), 
-    new Videojuego("The Quarry", "Drama", 5999, 8) 
+    new Videojuego("Resident Evil Village", "Terror", 4299, 1,"assets/village.jpg"),
+    new Videojuego("Gta V", "Acción - Mundo Abierto", 1199, 2, "assets/gtav.jpeg"), 
+    new Videojuego("Assasin's Creed Origins", "Acción - Mundo Abierto", 5299, 3, "assets/acorigins.jpg"), 
+    new Videojuego("The Sims 4", "Simulación", 3599, 4, "assets/sims-4.jpg"), 
+    new Videojuego("Battlefield 2042", "FPS - Acción", 111899, 5, "assets/battlefield-2042.jpg"), 
+    new Videojuego("Elden Ring", "Mundo Abierto - Tipo Souls", 6899, 6, "assets/elden-ring.jpg"), 
+    new Videojuego("Dying Light 2: Stay Human", "Zombies - Acción", 5199, 7, "assets/dying-light-2.jpg"), 
+    new Videojuego("The Quarry", "Drama", 5999, 8, "assets/The-Quarry.jpg") 
 ]
+
+console.log(arrayDeJuegos[3].img);
 
 // verificaciones
 
@@ -250,6 +253,7 @@ function agregarAlLocalStorage(juego) {
 
 function leerDatosDelJuego(juego) {
     const infoDelJuego = {
+        img: juego.img,
         nombre: juego.nombre,
         categoria: juego.categoria,
         precio: juego.precio,
@@ -289,18 +293,19 @@ function carritoHTML() {
     limpiarHTML()
     
     articulosDelCarrito.forEach((juego) => {
-        const div = document.createElement("div");
-        div.classList.add("juego")
-        div.innerHTML = `
-        <h4>Nombre: ${juego.nombre}</h4>
-        <p>Categría: ${juego.categoria}</p>
-        <p>Precio: $${juego.precio}</p>
-        <p>Cantidad: ${juego.cantidad}</p>
-        <button class="aumentar-cantidad" id="${juego.id}">+</button>
-        <button class="reducir-cantidad" id="${juego.id}">-</button>
-        <button class="delete-game" id="${juego.id}">Eliminar</button>
+        const row = document.createElement("tr");
+        row.classList.add("juego")
+        row.innerHTML = `
+        <td><img src="${juego.img}" width="100px"></td>
+        <td>${juego.nombre}</td>
+        <td>${juego.categoria}</td>
+        <td>$${juego.precio}</td>
+        <td>${juego.cantidad}</td>
+        <td class="aumentar-cantidad" id="${juego.id}">+</td>
+        <td class="reducir-cantidad" id="${juego.id}">-</td>
+        <td class="delete-game" id="${juego.id}">Eliminar</td>
         `
-        carrito.appendChild(div);
+        carrito.appendChild(row);
     })
 }
 

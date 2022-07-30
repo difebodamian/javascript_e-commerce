@@ -41,9 +41,23 @@ span {
 .none {
     display: none;
 }
-.cart-style {
-    display: block;
-    width: 80%;
-    margin: 10% 5%;
-    border: 2px solid blue;
+.table-container {
+    display: flex;
+    justify-content: center;
+}
+.table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    min-width: 400px;
+}
+.table thead tr {
+    background-color: blanchedalmond;
+    color: #fff;
+    text-align: left;
+    font-weight: bold;
+}
+.table td, 
+.table th {
+    padding: 12px 15px;
 }
