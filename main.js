@@ -46,7 +46,6 @@ const arrayDeJuegos = [
     new Videojuego("The Quarry", "Drama", 5999, 8, "assets/The-Quarry.jpg") 
 ]
 
-console.log(arrayDeJuegos[3].img);
 
 // verificaciones
 
@@ -105,7 +104,6 @@ function usuario(nombre,email,contraseña) {
 function agregarUsuarioAlLocalStorage(usuario) {
     const usuarioNuevo = JSON.stringify(usuario);
     localStorage.setItem("user", usuarioNuevo);
-    console.log(`${usuario.nombre} ha sido ingresado al local storage`);
     ocultarFormulario();
     mostrarBotonDeCerrarSesion();
     toastifyIniciarSesion(usuario);
@@ -133,7 +131,6 @@ function cerrarSesion() {
     mostrarFormulario();
     const user = localStorage.getItem("user");
     const usuario = JSON.parse(user);
-    console.log(usuario);
     toastifyCerrarSesion(usuario)
     user & localStorage.removeItem("user");
 }
@@ -143,7 +140,6 @@ function cerrarSesion() {
 function verificarSesionIniciada() {
     const usuarioExistente = localStorage.getItem("user");
     const usuario = JSON.parse(usuarioExistente);
-    console.log(usuario);
     usuarioExistente & ocultarFormulario();
     usuarioExistente & mostrarBotonDeCerrarSesion();
 }
@@ -175,14 +171,13 @@ function eliminarJuegoDelCarrito(e) {
     if (e.target.classList.contains("delete-game")) {
         const juegoID = parseInt(e.target.getAttribute("id"));
         const carritoDelLocalStorage = verificarLocalStorage();
-        const nombreDelJuego = carritoDelLocalStorage.find(juego => juego.id === juegoID).nombre
-        console.log(`${nombreDelJuego} ha sido eliminado del localStorage y del carrito`);
+        const juegoSeleccionado = carritoDelLocalStorage.find(juego => juegoID === juego.id)
         const arrayNuevo = carritoDelLocalStorage.filter(juego => juego.id !== juegoID);
         const arrayDeLocalStorage = JSON.stringify(arrayNuevo);
         localStorage.setItem("carrito", arrayDeLocalStorage);
         articulosDelCarrito = articulosDelCarrito.filter((juego) => juego.id !== juegoID);
         carritoHTML();
-        toastifyEliminar(nombreDelJuego);
+        toastifyEliminar(juegoSeleccionado);
     }
     sumarPrecios()
 }
@@ -207,11 +202,9 @@ function modificarCantidad(e) {
         const arrayNuevo = carritoDelLocalStorage.filter(juego => juego.id !== juegoID);
         const arrayDeLocalStorage = JSON.stringify(arrayNuevo);
         localStorage.setItem("carrito", arrayDeLocalStorage);
-        toastifyEliminar(juego.nombre)
+        toastifyEliminar(juego)
         juego.cantidad--;
         if (juego.cantidad === 0) {
-            const nombreDelJuego = juego.nombre;
-            toastifyEliminar(nombreDelJuego)
             articulosDelCarrito = articulosDelCarrito.filter((juego) => juego.id !== juegoID);
             carritoHTML();
         }
@@ -242,7 +235,6 @@ function verificarEstadoDelCarrito() {
 function agregarAlLocalStorage(juego) {
     const arrayDelLocalStorage = verificarLocalStorage()
     arrayDelLocalStorage.push(juego);
-    console.log(`${juego.nombre} ha sido agregado al carrito y al localStorage`);
     const output = JSON.stringify(arrayDelLocalStorage);
     localStorage.setItem("carrito", output);
 }
@@ -338,7 +330,6 @@ function vaciarCarrito() {
     articulosDelCarrito = [];
     limpiarHTML();
     actualizarCarrito()
-    console.log("Local Storage vacío");
 }
 
 // LIBRERIAS    
@@ -440,7 +431,7 @@ function toastifyAgregar(juego) {
 // toast para indicar que elimino un juego del carrito
 function toastifyEliminar(juego) {
     Toastify({
-        text: `Has eliminado ${juego} de tu carrito`,
+        text: `Has eliminado ${juego.nombre} de tu carrito`,
         duration: 3000,
         destination: "#carrito",
         newWindow: false,
