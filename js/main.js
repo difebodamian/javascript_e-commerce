@@ -1,7 +1,8 @@
 /*
-Darle la posibilidad al usuario de pagar en cuotas
-agregar una opcion de poner en modo oscuro
-
+Mi proyecto se trata de un e-commerce de videojuegos. En el que mediante fetch y un archivo JSON traigo a los objetos, este proyecto tiene
+la funcionalidad de poder hacer un login, donde se almacena en el local storage el usuario. Se pueden filtrar los juegos mediante 
+varias opciones. Se puede elegir si ver los precios en dólares o en pesos argentinos. Tiene un carrito donde se agregan los juegos que 
+el usuario elige. Incluye el uso de librerías: sweet alert y toastify
 */
 
 //  VARIABLES
@@ -21,12 +22,6 @@ const catalogo = document.querySelector(".games");
 const cambiarMoneda = document.querySelector(".cambiar-moneda");
 const botonPesos = document.querySelector(".pesos");
 const botonDolares = document.querySelector(".dolares");
-let articulosDelCarrito = [];
-let listaDeObjetos = [];
-let listaDePreciosPesos = [];
-let listaDePreciosDolares = [];
-let pesos = true;
-let dolares = false;
 const selectPesos = document.querySelector(".selectPesos");
 const selectDolares = document.querySelector(".selectDolares");
 const filtroTerror = document.querySelector("#terror");
@@ -39,8 +34,13 @@ const valor_5 = document.querySelector(".valor-5");
 const valor_6 = document.querySelector(".valor-6");
 const valor_7 = document.querySelector(".valor-7");
 const valor_8 = document.querySelector(".valor-8");
-
-
+const sinSeleccionar = document.querySelector(".sin-seleccionar");
+let articulosDelCarrito = [];
+let listaDeObjetos = [];
+let listaDePreciosPesos = [];
+let listaDePreciosDolares = [];
+let pesos = true;
+let dolares = false;
 
 // verificaciones
 
@@ -71,7 +71,7 @@ function cargarEventListener() {
     // camiar a pesos
     botonPesos.addEventListener("click", cambiarPreciosAPesos);
     // filtros por categorías
-    filtros.addEventListener("change", filtrarPorCategoria)
+    filtros.addEventListener("click", filtrarPorCategoria)
     // filtrar precios en pesos
     selectPesos.addEventListener("change", filtrarPorPreciosPesos);
     // filtrar precios en dólares
@@ -96,7 +96,8 @@ function filtrarPorCategoria(e) {
         } 
     })
     listaDeObjetos = juegosFiltrados;
-    pintarListaDeObjetos()
+    pintarListaDeObjetos();
+    pesos ? cargarListaDeObjetosPesos() : cargarListaDeObjetosDolares();
 }
 
 // función que toma los datos que ingresa el usuario
@@ -525,7 +526,7 @@ function cargarCatalogo() {
                         <h3 class="title">${juego.nombre}</h3>
                         <span class="category">${juego.categoria}</span>
                         <span class="price precioDelJuego">$${juego.precio}</span>
-                        <button class="button add-cart" id="${juego.id}">Add to cart</button>`;
+                        <button class="button add-cart" id="${juego.id}">Añadir al carrito</button>`;
             catalogo.appendChild(div)
         })
         cargarListaDeJuegosPesos();
@@ -548,6 +549,24 @@ function ocultarBotonPesos() {
     pesos.classList.add("none")
 }
 
+function cargarListaDeObjetosPesos() {
+    listaDeObjetos = []
+    fetch("./js/dataPesos.json")
+    .then((res) => res.json())
+    .then((data) => {
+        data.juegos.forEach((juego) => listaDeObjetos.push(juego))
+    })
+}
+
+function cargarListaDeObjetosDolares() {
+    listaDeObjetos = []
+    fetch("./js/dataDolares.json")
+    .then((res) => res.json())
+    .then((data) => {
+        data.juegos.forEach((juego) => listaDeObjetos.push(juego))
+    })
+}
+
 function pintarListaDeObjetos() {
     catalogo.innerHTML = "";
     listaDeObjetos.forEach((juego) => {
@@ -558,7 +577,7 @@ function pintarListaDeObjetos() {
                     <h3 class="title">${juego.nombre}</h3>
                     <span class="category">${juego.categoria}</span>
                     <span class="price precioDelJuego">$${juego.precio}</span>
-                    <button class="button add-cart" id="${juego.id}">Add to cart</button>`;
+                    <button class="button add-cart" id="${juego.id}">Añadir al carrito</button>`;
         catalogo.appendChild(div)
     })
 }
@@ -579,7 +598,7 @@ function cambiarPreciosADolares() {
                         <h3 class="title">${juego.nombre}</h3>
                         <span class="category">${juego.categoria}</span>
                         <span class="price precioDelJuego">$${juego.precio}</span>
-                        <button class="button add-cart" id="${juego.id}">Add to cart</button>`;
+                        <button class="button add-cart" id="${juego.id}">Añadir al carrito</button>`;
             catalogo.appendChild(div)
         })
         cargarListaDeJuegosDolares()
@@ -601,7 +620,7 @@ function cambiarPreciosAPesos() {
                         <h3 class="title">${juego.nombre}</h3>
                         <span class="category">${juego.categoria}</span>
                         <span class="price precioDelJuego">$${juego.precio}</span>
-                        <button class="button add-cart" id="${juego.id}">Add to cart</button>`;
+                        <button class="button add-cart" id="${juego.id}">Añadir al carrito</button>`;
             catalogo.appendChild(div)
         })
         cargarListaDeJuegosPesos()
@@ -671,6 +690,9 @@ function filtrarPorPreciosPesos(e) {
             listaDeObjetos = filtro;
             borrarCatalogo();
             filtrarElementos();
+        } else if (valor === sinSeleccionar.value) {
+            borrarCatalogo();
+            filtrarElementos();
         }
         cargarListaDeJuegosPesos();
     } else {console.log("error")}
@@ -707,6 +729,9 @@ function filtrarPorPreciosDolares(e) {
             listaDeObjetos = filtro;
             borrarCatalogo();
             filtrarElementos();
+        } else if (valor === sinSeleccionar.value) {
+            borrarCatalogo();
+            filtrarElementos();
         }
         cargarListaDeJuegosDolares();
     } else {console.log("error")}
@@ -734,7 +759,7 @@ function filtrarElementos() {
                     <h3 class="title">${juego.nombre}</h3>
                     <span class="category">${juego.categoria}</span>
                     <span class="price precioDelJuego">$${juego.precio}</span>
-                    <button class="button add-cart" id="${juego.id}">Add to cart</button>`;
+                    <button class="button add-cart" id="${juego.id}">Añadir al carrito</button>`;
         catalogo.appendChild(div)
     })
 }
