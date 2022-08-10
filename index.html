@@ -14,10 +14,6 @@
     <nav id="nav">
         <h1 class="heading">Games Store</h1>
         <button class="cerrar-sesion none">Cerrar Sesión</button>
-        <div class="cambiar-moneda">
-            <button class="pesos none">Pesos</button>
-            <button class="dolares">Dólares</button>
-        </div>
     </nav>
     <div class="form-container">
         <form action="" id="form">
@@ -30,6 +26,46 @@
             <input type="password" name="constraseña" id="password" placeholder="Escribe constraseña" required>
             <button class="form_button" type="submit">Enviar</button>
         </form>
+    </div>
+    <div class="cambiar-moneda">
+        <button class="pesos none">Pesos</button>
+        <button class="dolares">Dólares</button>
+    </div>
+    <div class="filtros-container">
+        <label for="precio">Precio</label>
+        <select name="precio" id="precioPesos" class="selectPesos">
+            <option value="none">Sin seleccionar</option>
+            <option value="menorA2000" class="valor-1">Menos de $2.000</option>
+            <option value="menorA5000" class="valor-2">Menos de $5.000</option>
+            <option value="menorA7000" class="valor-3">Menos de $7.000</option>
+            <option value="menorA10000" class="valor-4">Menos de $10.000</option>
+        </select>
+        <select name="precio" id="precioDolares" class="selectDolares none">
+            <option value="none">Sin seleccionar</option>
+            <option value="menorA10" class="valor-5">Menos de $10</option>
+            <option value="menorA15" class="valor-6">Menos de $15</option>
+            <option value="menorA20" class="valor-7">Menos de $20</option>
+            <option value="menorA30" class="valor-8">Menos de $30</option>
+        </select>
+        <div class="filtros-categoria">
+            <label for="categoria">Categoria</label>
+            <input type="checkbox" name="terror" id="terror">
+            <label for="terror">Terror</label>
+            <input type="checkbox" name="accion" id="accion">
+            <label for="accion">Acción</label>
+            <input type="checkbox" name="mundo-abierto" id="mundo-abierto">
+            <label for="mundo-abierto">Mundo abierto</label>
+            <input type="checkbox" name="simulacion" id="simulacion">
+            <label for="simulacion">Simulación</label>
+            <input type="checkbox" name="fps" id="fps">
+            <label for="fps">FPS</label>
+            <input type="checkbox" name="tipo-souls" id="tipo-souls">
+            <label for="tipo-souls">Tipo Souls</label>
+            <input type="checkbox" name="zombies" id="zombies">
+            <label for="zombies">Zombies</label>
+            <input type="checkbox" name="drama" id="drama">
+            <label for="drama">Drama</label>
+        </div>
     </div>
     <main id="main">
         <div class="grid games">

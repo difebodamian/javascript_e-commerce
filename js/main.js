@@ -1,21 +1,16 @@
 /*
 Darle la posibilidad al usuario de pagar en cuotas
-Agregar un botón en el nav para cambiar los precios de los games a dólares o pesos
 agregar una opcion de poner en modo oscuro
+
 */
 
 //  VARIABLES
 
 const carrito = document.querySelector(".tbody");
-const cancelarCompraBtn = document.querySelector(".cancel-buy-btn");
 const listaDeJuegos = document.querySelector(".games");
-const añadirAlCarritoBtn = document.querySelectorAll(".add-cart");
 const vaciarCarritoBtn = document.querySelector(".empty-cart-btn");
 const confirmarCompraBtn = document.querySelector(".confirm-buy-btn");
-const main = document.querySelector("#main");
 const resultadoTotal = document.querySelector(".resultadoTotal");
-const aumentarCantidadBtn = document.querySelectorAll(".aumentar-cantidad");
-const reducirCantidadBtn = document.querySelectorAll(".reducir-cantidad");
 const inputNombre = document.querySelector("#nombre");
 const inputEmail = document.querySelector("#email");
 const inputContraseña = document.querySelector("#password");
@@ -32,7 +27,18 @@ let listaDePreciosPesos = [];
 let listaDePreciosDolares = [];
 let pesos = true;
 let dolares = false;
-
+const selectPesos = document.querySelector(".selectPesos");
+const selectDolares = document.querySelector(".selectDolares");
+const filtroTerror = document.querySelector("#terror");
+const filtros = document.querySelector(".filtros-categoria");
+const valor_1 = document.querySelector(".valor-1");
+const valor_2 = document.querySelector(".valor-2");
+const valor_3 = document.querySelector(".valor-3");
+const valor_4 = document.querySelector(".valor-4");
+const valor_5 = document.querySelector(".valor-5");
+const valor_6 = document.querySelector(".valor-6");
+const valor_7 = document.querySelector(".valor-7");
+const valor_8 = document.querySelector(".valor-8");
 
 
 
@@ -64,6 +70,33 @@ function cargarEventListener() {
     botonDolares.addEventListener("click", cambiarPreciosADolares);
     // camiar a pesos
     botonPesos.addEventListener("click", cambiarPreciosAPesos);
+    // filtros por categorías
+    filtros.addEventListener("change", filtrarPorCategoria)
+    // filtrar precios en pesos
+    selectPesos.addEventListener("change", filtrarPorPreciosPesos);
+    // filtrar precios en dólares
+    selectDolares.addEventListener("change", filtrarPorPreciosDolares);
+}
+
+
+function filtrarPorCategoria(e) {
+    const id = e.target.id;
+    const idMinuscula = id.toLowerCase();
+    const idSinGuiones = idMinuscula.replace("-", " ");
+    const juegosFiltrados = listaDeObjetos.filter((el) => {
+        const categoriaLength = el.categoria.length;
+        if (categoriaLength > 2) {
+            return el.categoria === idSinGuiones
+        } else if (categoriaLength <= 2) {
+            if (el.categoria[0] === idSinGuiones) {
+                return el.categoria[0] === idSinGuiones
+            } else if (el.categoria[1] === idSinGuiones) {
+                return el.categoria[1] === idSinGuiones
+            }
+        } 
+    })
+    listaDeObjetos = juegosFiltrados;
+    pintarListaDeObjetos()
 }
 
 // función que toma los datos que ingresa el usuario
@@ -142,7 +175,7 @@ function verificarSesionIniciada() {
 function añadirJuegoAlCarrito(e) {
     e.preventDefault();
     mostrarCarrito()
-
+    
     if (e.target.classList.contains("add-cart")) {
         const id = parseInt(e.target.getAttribute("id"));
         const juegoSeleccionado = listaDeObjetos.find(juego => {
@@ -158,7 +191,7 @@ function añadirJuegoAlCarrito(e) {
 
 function eliminarJuegoDelCarrito(e) {
     e.preventDefault();
-
+    
     if (e.target.classList.contains("delete-game")) {
         const juegoID = parseInt(e.target.getAttribute("id"));
         const carritoDelLocalStorage = verificarLocalStorage();
@@ -180,7 +213,7 @@ function modificarCantidad(e) {
     const clase = e.target.classList;
     if (clase.contains("aumentar-cantidad")) {
         const juegoID = parseInt(e.target.getAttribute("id")); 
-        const juegoSeleccionado = arrayDeJuegos.find(juego => {
+        const juegoSeleccionado = listaDeObjetos.find(juego => {
             return juego.id === juegoID
         });
         leerDatosDelJuego(juegoSeleccionado);
@@ -344,17 +377,17 @@ function confirmarCompra() {
         confirmButtonText: 'Si, quiero comprarlo',
         cancelButtonText: 'No, me arrepentí!',
         reverseButtons: true
-      }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
           swalWithBootstrapButtons.fire(
-            'Listo!',
+              'Listo!',
             'Compra realizada',
             'success'
           )
         } else if (
           /* Read more about handling dismissals below */
           result.dismiss === Swal.DismissReason.cancel
-        ) {
+          ) {
           swalWithBootstrapButtons.fire(
             'Cancelado',
             'Tu compra ha sido cancelada',
@@ -369,7 +402,7 @@ function confirmarCompra() {
 function vaciarCarritoSweetAlert() {
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
-          confirmButton: 'btn btn-success',
+            confirmButton: 'btn btn-success',
           cancelButton: 'btn btn-danger'
         },
         buttonsStyling: false
@@ -382,25 +415,29 @@ function vaciarCarritoSweetAlert() {
         confirmButtonText: 'Si',
         cancelButtonText: 'No',
         reverseButtons: true
-      }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire(
+            swalWithBootstrapButtons.fire(
             'Eliminado',
             'Su carrito ha sido eliminado con éxito',
             'success'
-          )
+            )
           vaciarCarrito()
         } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
             'Cancelado',
             'Su carrito está a salvo',
             'error'
-          )
+            )
         }
-      })
+    })
+}
+
+function cambiarADolares() {
+    Swal.fire('No te recomiendo convertir a dólares, no te deprimas!')
 }
 
 // toast para indicar que agregué un juego al carrito
@@ -436,7 +473,7 @@ function toastifyEliminar(juego) {
           background: "linear-gradient(to right, #00b09b, #96c93d)",
         },
         onClick: function(){} // Callback after click
-      }).showToast();
+    }).showToast();
 }
 
 function toastifyIniciarSesion(usuario) {
@@ -454,7 +491,7 @@ function toastifyIniciarSesion(usuario) {
         },
         onClick: function(){} // Callback after click
       }).showToast();
-}
+    }
 
 function toastifyCerrarSesion(usuario) {
     Toastify({
@@ -470,7 +507,7 @@ function toastifyCerrarSesion(usuario) {
           background: "linear-gradient(to right, #00b09b, #96c93d)",
         },
         onClick: function(){} // Callback after click
-      }).showToast();
+    }).showToast();
 }
 
 // USO DEL FETCH
@@ -511,8 +548,26 @@ function ocultarBotonPesos() {
     pesos.classList.add("none")
 }
 
+function pintarListaDeObjetos() {
+    catalogo.innerHTML = "";
+    listaDeObjetos.forEach((juego) => {
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.innerHTML = `
+                    <img class="img" src="${juego.img}" alt="">
+                    <h3 class="title">${juego.nombre}</h3>
+                    <span class="category">${juego.categoria}</span>
+                    <span class="price precioDelJuego">$${juego.precio}</span>
+                    <button class="button add-cart" id="${juego.id}">Add to cart</button>`;
+        catalogo.appendChild(div)
+    })
+}
+
 function cambiarPreciosADolares() {
-    borrarCatalogo()
+    cambiarADolares();
+    ocultarSelectPesos();
+    mostrarSelectDolares();
+    borrarCatalogo();
     fetch("./js/dataDolares.json")
     .then((res) => res.json())
     .then((data) => {
@@ -532,6 +587,8 @@ function cambiarPreciosADolares() {
 }
 
 function cambiarPreciosAPesos() {
+    ocultarSelectDolares();
+    mostrarSelectPesos();
     borrarCatalogo();
     fetch("./js/dataPesos.json")
     .then((res) => res.json())
@@ -540,7 +597,7 @@ function cambiarPreciosAPesos() {
             const div = document.createElement("div");
             div.classList.add("card");
             div.innerHTML = `
-                        <img class="img" src="${juego.img}" alt="">
+            <img class="img" src="${juego.img}" alt="">
                         <h3 class="title">${juego.nombre}</h3>
                         <span class="category">${juego.categoria}</span>
                         <span class="price precioDelJuego">$${juego.precio}</span>
@@ -581,6 +638,104 @@ function cargarListaDeJuegosPesos() {
     pesos & mostrarBotonDolares();
 }
 
+//  FILTROS
 
+function filtrarPorPreciosPesos(e) {
+    const valor = e.target.value;
+    if (pesos === true && dolares === false) {
+        if (valor === valor_1.value) {
+            const filtro = listaDeObjetos.filter((el) => {
+                return el.precio < 2000
+            })
+            listaDeObjetos = filtro;
+            borrarCatalogo();
+            filtrarElementos();
+        } else if (valor === valor_2.value) {
+            const filtro = listaDeObjetos.filter((el) => {
+                return el.precio < 5000
+            })
+            listaDeObjetos = filtro;
+            borrarCatalogo();
+            filtrarElementos();
+        } else if (valor === valor_3.value) {
+            const filtro = listaDeObjetos.filter((el) => {
+                return el.precio < 7000
+            })
+            listaDeObjetos = filtro;
+            borrarCatalogo();
+            filtrarElementos();
+        } else if (valor === valor_4.value) {
+            const filtro = listaDeObjetos.filter((el) => {
+                return el.precio < 10000
+            })
+            listaDeObjetos = filtro;
+            borrarCatalogo();
+            filtrarElementos();
+        }
+        cargarListaDeJuegosPesos();
+    } else {console.log("error")}
+}
 
+function filtrarPorPreciosDolares(e) {
+    const valor = e.target.value;
+    if (pesos === false && dolares === true) {
+        if (valor === valor_5.value) {
+            const filtro = listaDeObjetos.filter((el) => {
+                return el.precio < 10
+            })
+            listaDeObjetos = filtro;
+            borrarCatalogo();
+            filtrarElementos();
+        } else if (valor === valor_6.value) {
+            const filtro = listaDeObjetos.filter((el) => {
+                return el.precio < 15
+            })
+            listaDeObjetos = filtro;
+            borrarCatalogo();
+            filtrarElementos();
+        } else if (valor === valor_7.value) {
+            const filtro = listaDeObjetos.filter((el) => {
+                return el.precio < 20
+            })
+            listaDeObjetos = filtro;
+            borrarCatalogo();
+            filtrarElementos();
+        } else if (valor === valor_8.value) {
+            const filtro = listaDeObjetos.filter((el) => {
+                return el.precio < 30
+            })
+            listaDeObjetos = filtro;
+            borrarCatalogo();
+            filtrarElementos();
+        }
+        cargarListaDeJuegosDolares();
+    } else {console.log("error")}
+}
+
+function ocultarSelectPesos() {
+    selectPesos.classList.add("none");
+}
+function mostrarSelectPesos() {
+    selectPesos.classList.remove("none");
+}
+function ocultarSelectDolares() {
+    selectDolares.classList.add("none");
+}
+function mostrarSelectDolares() {
+    selectDolares.classList.remove("none");
+}
+
+function filtrarElementos() {
+    listaDeObjetos.forEach((juego) => {
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.innerHTML = `
+                    <img class="img" src="${juego.img}" alt="">
+                    <h3 class="title">${juego.nombre}</h3>
+                    <span class="category">${juego.categoria}</span>
+                    <span class="price precioDelJuego">$${juego.precio}</span>
+                    <button class="button add-cart" id="${juego.id}">Add to cart</button>`;
+        catalogo.appendChild(div)
+    })
+}
 

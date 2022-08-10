@@ -3,56 +3,56 @@
         { 
             "nombre" : "Resident Evil Village",
             "precio" : 14.33,
-            "categoria" : "Terror",
+            "categoria" : "terror",
             "id" : 1,
             "img" : "assets/village.jpg"
         },
         {
             "nombre" : "GTA V",
             "precio" : 3.99,
-            "categoria" : ["Acción", "Mundo abierto"],
+            "categoria" : ["accion", "mundo abierto"],
             "id" : 2,
             "img" : "assets/gtav.jpeg"
         },
         {
             "nombre" : "Assassin's Creed Origins",
             "precio" : 17.66,
-            "categoria" : ["Acción", "Mundo abierto"],
+            "categoria" : ["accion", "mundo abierto"],
             "id" : 3,
             "img" : "assets/acorigins.jpg"
         },
         {
             "nombre" : "The Sims 4",
             "precio" : 11.99,
-            "categoria" : "Simulación",
+            "categoria" : "simulacion",
             "id" : 4,
             "img" : "assets/sims-4.jpg"
         },
         {
             "nombre" : "Battlefield 2042",
             "precio" : 37.29,
-            "categoria" : ["FPS", "Acción"],
+            "categoria" : ["fps", "accion"],
             "id" : 5,
             "img" : "assets/battlefield-2042.jpg"
         },
         {
             "nombre" : "Elden Ring",
             "precio" : 22.99,
-            "categoria" : ["Tipo Souls", "Mundo abierto"],
+            "categoria" : ["tipo souls", "mundo abierto"],
             "id" : 6,
             "img" : "assets/elden-ring.jpg"
         },
         {
             "nombre" : "Dying Light 2: Stay Human",
             "precio" : 17.33,
-            "categoria" : ["Acción", "Zombies"],
+            "categoria" : ["accion", "zombies"],
             "id" : 7,
             "img" : "assets/dying-light-2.jpg"
         },
         {
             "nombre" : "The Quarry",
             "precio" : 19.99,
-            "categoria" : "Drama",
+            "categoria" : "drama",
             "id" : 8,
             "img" : "assets/The-Quarry.jpg"
         }
